@@ -1,56 +1,4 @@
 #include "rubro-negra.h"
-#include <stdio.h>
-#include <stdlib.h>
-
-// CORES TERMINAL
-#define ANSI_RESET "\x1B[0m"
-#define ANSI_RED "\x1B[31m"
-#define ANSI_GREEN "\x1B[32m"
-#define ANSI_YELLOW "\x1B[33m"
-#define ANSI_BLUE "\x1B[34m"
-#define ANSI_MAGENTA "\x1B[35m"
-#define ANSI_CYAN "\x1B[36m"
-#define ANSI_BLACK "\x1B[30m"
-
-/**
- * Estrutura que representa um nó de uma árvore rubro-negra.
- */
-struct node {
-    int elem;    /**< Elemento que representa o valor armazenado.*/
-    NO *pai;     /**< Ponteiro para o pai do nó.*/
-    NO *dir;     /**< Ponteiro para o nó filho direito.*/
-    NO *esq;     /**< Ponteiro para o nó filho esquerdo.*/
-    color cor;   /**< Cor do nó (PRETO || VERMELHO).*/
-};
-
-
-/**
- * Da opções de seleção ao usuário
- * 
- * @return A opção selecionada
-*/
-int menu() {
-   char input[100];
-   int op;
-   printf(ANSI_RESET "\n1- Inserir\n" ANSI_RESET);
-   printf("2- Deletar\n");
-   printf("3- Em ordem\n");
-   printf("4- Pós ordem\n");
-   printf("5- Pré ordem\n");
-   printf("6- Imprimir arvore\n");
-   printf("7- Busca binaria\n");
-   printf("8- Contar nos pretos\n");
-   printf("9- Calcula altura\n");
-   printf("10- Quantidade de nos\n");
-   printf("11- Expurgar\n\n");
-   printf("0- Sair\n");
-   printf("OPCAO: ");
-
-   fgets(input, sizeof(input), stdin);
-   op = strtol(input, NULL, 10);
-
-   return op;
-}
 
 /**
  * Aloca um novo nó na memória e adiciona seus valores
@@ -59,17 +7,30 @@ int menu() {
  * @param raiz (NO *) no pai do novo nó
  * @return Novo nó criado
 */
-NO *novo_no(int elem, NO *raiz) {
-   NO *novo = malloc(sizeof(NO)); // Aloca um novo elemnto do tipo NO
-   if (novo == NULL) { // Caso a alocação resulte em um ponteiro NULL, não há espaço na memória
-      printf("Sem espaço de memória.\n");
-      return NULL; // Retorna para sinalizar o erro de alocação
+NO *novo_no(char ordem[71], char chave[6], char titulo[71], int rrn, NO *raiz) {
+   NO *novo = malloc(sizeof(NO));
+   if (novo == NULL) {
+      printf(ERRO "Sem espaço de memória.\n" LIMPA);
+      return NULL;
    }
-   novo->elem = elem;
-   novo->pai = raiz;             // A raiz passada no parâmetro é a raiz da nova subárvore
-   novo->dir = novo->esq = NULL; // Nó sem filho
-   novo->cor = VERMELHO;                // A cor inicialmente é vermelha e toda inserção
-   return novo;                  // Retorna o novo nó, sinalizando que foi realizado com sucesso
+
+   strcpy(novo->ordem, ordem);
+
+   if (titulo && strcmp(titulo, "") != 0) {
+       strcpy(novo->chave, "");
+       strcpy(novo->titulo, titulo);
+       novo->lista = NULL;
+       insere_lista(&novo, chave);
+   } else {
+       strcpy(novo->chave, chave);
+       novo->lista == NULL;
+   }
+   novo->rrn = rrn;
+
+   novo->pai = raiz;
+   novo->dir = novo->esq = NULL;
+   novo->cor = VERMELHO;
+   return novo;
 }
 
 /**
@@ -376,14 +337,14 @@ void pos_ordem(NO *raiz) {
  * 
  * @return TRUE caso o nó tenha sido encontrado e removido e FALSE c.c.
 */
-boolean deleta_no(NO **raiz, int elem) {
+boolean deleta_no(NO **raiz, char ordem[71], char chave[6], char titulo[71], int rrn) {
    NO *aux = *raiz;
 
    while (TRUE) { // Busca o elemento na árvore
-      if (elem == aux->elem)
+      if (strcmp(ordem, aux->ordem) == 0)
          break; // Nó encontrado
 
-      if (elem > aux->elem) {
+      if (strcmp(ordem, aux->ordem) > 0) {
          if (aux->dir)
             aux = aux->dir;
          else
@@ -413,8 +374,17 @@ boolean deleta_no(NO **raiz, int elem) {
       return TRUE;
    }
 
-   aux->elem = removido->elem;
-   removido->elem = elem;
+
+   strcpy(aux->ordem, removido->ordem);
+   strcpy(aux->chave, removido->chave);
+   strcpy(aux->titulo, removido->titulo);
+   aux->rrn = removido->rrn;
+
+   strcpy(removido->ordem, ordem);
+   strcpy(removido->chave, chave);
+   strcpy(removido->titulo, titulo);
+   removido->rrn = rrn;
+
    if (verifica_caso1(removido)) {
       if (!removido->esq && !removido->dir) { // Removido é folha
          if (removido->pai->esq == removido) {
@@ -659,24 +629,30 @@ void verifica_caso2(NO *removido, boolean remover, boolean direita, NO **raiz) {
  * @param elem (int) elemento chave a ser inserido
  * @return TRUE caso foi possível inserir na árvore ou FALSE c.c.
 */
-boolean insere_no(NO **raiz, int elem) {
+boolean insere_no(NO **raiz, char ordem[71], char chave[6], char titulo[71], int rrn) {
+
+    if ((*raiz) == NULL) {
+        *raiz = novo_no(ordem, chave, titulo, rrn, *raiz);
+        return TRUE;
+    }
+
    NO *busca = *raiz;
    while (busca) {
-      if (busca->elem > elem) {
+      if (strcmp(busca->ordem, ordem) > 0) {
          if (busca->esq)
             busca = busca->esq;
          else {
-            NO *novo = novo_no(elem, busca);
+            NO *novo = novo_no(ordem, chave, titulo, rrn, busca);
             busca->esq = novo;
             busca = novo;
 
             break;
          }
-      } else if (busca->elem < elem) {
+      } else if (strcmp(busca->ordem, ordem) < 0) {
          if (busca->dir)
             busca = busca->dir;
          else {
-            NO *novo = novo_no(elem, busca);
+            NO *novo = novo_no(ordem, chave, titulo, rrn, busca);
             busca->dir = novo;
             busca = novo;
 
@@ -710,14 +686,14 @@ boolean insere_no(NO **raiz, int elem) {
  * @param elem (int) elemento chave a ser procurado
  * @return O no encontrado ou retorna NULL c.c.
 */
-NO *busca_binaria(NO *raiz, int elem) {
-   if (!raiz || raiz->elem == elem)
+NO *busca_binaria(NO *raiz, char busca[71]) {
+   if (!raiz || strcmp(raiz->ordem, busca) == 0)
       return raiz;
 
-   if (raiz->elem > elem)
-      return busca_binaria(raiz->esq, elem);
+   if (strcmp(raiz->ordem, busca) > 0)
+      return busca_binaria(raiz->esq, busca);
    else
-      return busca_binaria(raiz->dir, elem);
+      return busca_binaria(raiz->dir, busca);
 }
 
 /**
@@ -733,11 +709,25 @@ NO *expurgar_arvore(NO *raiz) {
    else {
       raiz->esq = expurgar_arvore(raiz->esq);
       raiz->dir = expurgar_arvore(raiz->dir);
-
+      expurgar_lista(raiz->lista);
       free(raiz);
       return NULL;
    }
 }
+
+/**
+ * Função que desaloca completamente a lísta da memória
+ * @param lista (LISTA *) cabeça da lista
+ */
+void expurgar_lista(LISTA *lista) {
+    LISTA *atual = lista, *prox;
+    while (atual != NULL) {
+        prox = atual->prox;
+        free(atual);
+        atual = prox;
+    }
+}
+
 
 /**
  * Imprime horizontalmente a árvore rubro negra
@@ -769,9 +759,9 @@ void imprime_arvore(NO *no, int nivel) {
 */
 void printa_no(NO *no, char *espacamento) {
    if (no->cor == VERMELHO)
-      printf(ANSI_RED "%d%s" ANSI_RED, no->elem, espacamento);
+      printf(NO_VERMELHO "%s%s" LIMPA, no->ordem, espacamento);
    else
-      printf(ANSI_BLACK "%d%s" ANSI_BLACK, no->elem, espacamento);
+      printf(NO_PRETO "%s%s" LIMPA, no->ordem, espacamento);
 }
 
 /**
@@ -792,3 +782,50 @@ int conta_nos_pretos(NO *no) {
 
    return contagem;
 }
+
+void insere_lista(NO **no, char chave[6]) {
+    LISTA *novo = malloc(sizeof (LISTA)), *anterior = NULL, *atual = (*no)->lista;
+    novo->prox = NULL;
+    strcpy(novo->chave, chave);
+
+    // Percorre a lista até encontrar a posição correta de inserção
+    while (atual != NULL && strcmp(atual->chave, chave) < 0) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    // Insere o novo elemento na lista
+    if (anterior == NULL) {
+        // Insere no início da lista
+        novo->prox = (*no)->lista;
+        (*no)->lista = novo;
+    } else {
+        // Insere no meio ou no final da lista
+        anterior->prox = novo;
+        novo->prox = atual;
+    }
+}
+
+void remove_lista(NO **no, char chave[6]) {
+    LISTA *anterior = NULL, *atual = (*no)->lista;
+
+    // Percorre a lista até encontrar o elemento com a chave desejada
+    while (atual != NULL && strcmp(atual->chave, chave) != 0) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    // Remove o elemento da lista
+    if (atual != NULL) {
+        if (anterior == NULL) {
+            // Remove o primeiro elemento da lista
+            (*no)->lista = atual->prox;
+        } else {
+            // Remove um elemento do meio ou do final da lista
+            anterior->prox = atual->prox;
+        }
+        free(atual);
+    }
+}
+
+
