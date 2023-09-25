@@ -44,7 +44,7 @@ int calcula_altura(NO* no);
 int num_total_nos(NO* no);
 boolean no_folha(NO *raiz);
 NO * busca_binaria(NO *raiz, char busca[61]);
-NO * expurgar_arvore(NO *arvore);
+NO * expurgar_arvore(NO *arvore, boolean lista);
 void expurgar_lista(LISTA *lista);
 void printa_no(NO *no, char *espacamento);
 int conta_nos_pretos(NO* no);

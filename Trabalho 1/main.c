@@ -4,7 +4,7 @@
  */
 
 #include <stdio.h>
-#include "filmes.c"
+#include "filmes.h"
 #include "perfumaria.h"
 
 
@@ -102,8 +102,8 @@ int main() {
         printf(SUCESSO NEGRITO"Arquivos de indices reescritos!\n" LIMPA);
     }
 
-    expurgar_arvore(indiceP);
-    expurgar_arvore(indiceS);
+    expurgar_arvore(indiceP, FALSE);
+    expurgar_arvore(indiceS, TRUE);
 
     return 0;
 }

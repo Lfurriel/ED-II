@@ -519,7 +519,7 @@ boolean compactarArquivo(FILE *fp, NO **indiceP) {
 
     //Expurga a árvores de índice primário e a reescreve partindo do arquivo de filmes
     //É necessário para manter a integridade do RRN
-    expurgar_arvore(*indiceP);
+    expurgar_arvore(*indiceP, FALSE);
     *indiceP = NULL;
 
     total = calculaRRN(fp);

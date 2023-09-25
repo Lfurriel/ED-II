@@ -1,2 +1,4 @@
 *.exe
 /cmake-build-debug/CMakeFiles/clion-Debug-log.txt
+/Trabalho 1/cmake-build-debug
+/.idea

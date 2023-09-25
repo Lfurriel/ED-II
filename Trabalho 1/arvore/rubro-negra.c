@@ -702,17 +702,18 @@ NO *busca_binaria(NO *raiz, char busca[71]) {
  * @param raiz (NO *) raiz da arvore/subarvore
  * @return NULL no final quando toda árvore tenha sido expurgada
 */
-NO *expurgar_arvore(NO *raiz) {
-   if (raiz == NULL)
-      return NULL;
+NO *expurgar_arvore(NO *raiz, boolean lista) {
+    if (raiz == NULL)
+        return NULL;
 
-   else {
-      raiz->esq = expurgar_arvore(raiz->esq);
-      raiz->dir = expurgar_arvore(raiz->dir);
-      expurgar_lista(raiz->lista);
-      free(raiz);
-      return NULL;
-   }
+    else {
+        raiz->esq = expurgar_arvore(raiz->esq, lista);
+        raiz->dir = expurgar_arvore(raiz->dir, lista);
+        if (lista)
+            expurgar_lista(raiz->lista);
+        free(raiz);
+        return NULL;
+    }
 }
 
 /**
