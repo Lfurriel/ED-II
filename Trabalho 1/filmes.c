@@ -1,5 +1,5 @@
 /**
- * Arquivo com as funções principais do programa de coleção de filmes.
+ * Arquivo com as funÃ§Ãµes principais do programa de coleÃ§Ã£o de filmes.
  * @author Lucas Furriel Rodrigues
  */
 
@@ -9,6 +9,7 @@
 
 /*  Função responsável por ler do usuário uma dentre as 7 opções disponíveis do sitema. */
 int menu() {
+
     int op = -1, ret;
     do {
         printf(LARANJA NEGRITO SUBLINHADO"\n------------ COLECAO DE FILMES ------------" LIMPA);
@@ -180,12 +181,17 @@ boolean inserirFilme(FILE *filmes, NO **indiceP, NO **indiceS) {
     //Lê informações do novo filme do usuário
     printf(ITALICO "Digite o titulo em portugues do filme: " LIMPA);
     scanf(" %65[^\n]s", novo->tituloPortugues);
+    while (getchar() != '\n');
+
     printf(ITALICO "Digite o titulo original do filme: " LIMPA);
     scanf(" %70[^\n]s", novo->tituloOriginal);
+    while (getchar() != '\n');
+
 
     while (erro) {
         printf(ITALICO "Digite o nome do diretor <Sobrenome, Nome>: " LIMPA);
         scanf(" %20[^\n]s", novo->nomeDiretor);
+        while (getchar() != '\n');
         erro = validaNome(novo->nomeDiretor);
         if (erro)
             printf(ERRO NEGRITO "O sobrenome precisa conter 3 caracteres\n" LIMPA);
@@ -195,6 +201,7 @@ boolean inserirFilme(FILE *filmes, NO **indiceP, NO **indiceS) {
     while (erro) {
         printf(ITALICO "Digite o ano de lancamento: " LIMPA);
         scanf(" %4[^\n]s", novo->anoLancamento);
+        while (getchar() != '\n');
         erro = validaAno(novo->anoLancamento);
         if (erro)
             printf(ERRO NEGRITO "Entrada invalida\n" LIMPA);
@@ -202,6 +209,7 @@ boolean inserirFilme(FILE *filmes, NO **indiceP, NO **indiceS) {
 
     printf(ITALICO "Digite o pais do filme: " LIMPA);
     scanf(" %20[^\n]s", novo->pais);
+    while (getchar() != '\n');
 
     do {
         erro = FALSE;
@@ -324,7 +332,7 @@ int calculaRRN(FILE *fp) {
     A remoção é feita inserindo *| no início da chave (Ex: "RIB23" -> "*|B23"). */
 boolean removerFilme(FILE *fp, NO **indiceP, NO **indiceS) {
     NO *busca;
-    char temp[71], chave[6];
+    char temp[66], chave[6];
 
     printf(ITALICO "Digite a chave primaria do filme que quer remover: " LIMPA);
     scanf(" %s", chave);
@@ -337,9 +345,9 @@ boolean removerFilme(FILE *fp, NO **indiceP, NO **indiceS) {
     }
 
     fseek(fp, busca->rrn * 192, SEEK_SET); //Posiciona o ponteiro do arquivo de filmes conforme o RRN do filme a ser removido
-    fscanf(fp, "%[^@]s", temp);
+    fscanf(fp, "%[^@]", temp);
     fgetc(fp);
-    fscanf(fp, "%[^@]s", temp); //Pega a chave secundaria do filme para remover da árvore
+    fscanf(fp, "%[^@]", temp); //Pega a chave secundaria do filme para remover da árvore
     fseek(fp, busca->rrn * 192, SEEK_SET); //Volta ao início do registro
     fprintf(fp, "%s", "*|"); //Sobreescreve a chava primária com "*|"
 

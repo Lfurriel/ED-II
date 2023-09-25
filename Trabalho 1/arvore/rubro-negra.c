@@ -686,7 +686,7 @@ boolean insere_no(NO **raiz, char ordem[71], char chave[6], char titulo[71], int
  * @param elem (int) elemento chave a ser procurado
  * @return O no encontrado ou retorna NULL c.c.
 */
-NO *busca_binaria(NO *raiz, char busca[71]) {
+NO *busca_binaria(NO *raiz, char busca[66]) {
    if (!raiz || strcmp(raiz->ordem, busca) == 0)
       return raiz;
 

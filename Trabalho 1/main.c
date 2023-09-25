@@ -9,7 +9,6 @@
 
 
 int main() {
-
     char pathFilmes[80] = "Files/movies.dat"; //Caminho do arquivo filmes
     char pathPrimary[80] = "Files/iprimary.idx"; //Caminho do arquivo de índices primário
     char pathTitle[80] = "Files/ititle.idx"; //Caminho do arquivo de índices secundário
@@ -51,13 +50,15 @@ int main() {
                 break;
             case 4: //Buscar por ID
                 printf(ITALICO "\nDigite o valor da chave primaria: " LIMPA);
-                scanf(" %[^\n]s", temp);
+                scanf(" %6[^\n]s", temp);
+                while (getchar() != '\n');
                 buscarChavePrimaria(filmes, indiceP, temp); //Busca um filme pela chave primária e imprime no terminal
                 printf("---------------------------------\n");
                 break;
             case 5: //Busca um filme pela chave secundária (nome) e imprime no terminal
                 printf(ITALICO "\nDigite o titulo em portugues: " LIMPA);
-                scanf(" %[^\n]s", temp);
+                scanf(" %66[^\n]s", temp);
+                while (getchar() != '\n');
                 buscarChaveSecundaria(filmes, indiceP, indiceS, temp);
                 printf("---------------------------------\n");
                 break;

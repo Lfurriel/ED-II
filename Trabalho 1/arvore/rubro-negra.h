@@ -18,7 +18,7 @@ typedef struct lista LISTA;
  * Estrutura que representa um nó de uma árvore rubro-negra.
  */
 struct node {
-    char ordem[61];    /**< Elemento que representa o valor responsável por odenar a árvore.*/
+    char ordem[66];    /**< Elemento que representa o valor responsável por odenar a árvore.*/
     char chave[6];    /**< Elemento que representa a chave primária.*/
     int rrn;    /**< Elemento que representa o RRN.*/
     char titulo[61];    /**< Elemento que representa a chave secundária.*/
