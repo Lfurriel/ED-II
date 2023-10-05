@@ -523,24 +523,24 @@ boolean compactarArquivo(FILE *fp, NO **indiceP) {
     }
 
     fseek(fp, 0, SEEK_END);
-    ftruncate(fileno(fp), ftell(fp) - (deletados * 192)); //Truncate para remover do fim do arquivo os duplicados que ficam do laço anterior
-
-    //Expurga a árvores de índice primário e a reescreve partindo do arquivo de filmes
-    //É necessário para manter a integridade do RRN
-    expurgar_arvore(*indiceP, FALSE);
-    *indiceP = NULL;
-
-    total = calculaRRN(fp);
-    rewind(fp);
-
-    count = 0;
-    while (count < total) {
-        fseek(fp, count * 192, SEEK_SET);
-        fscanf(fp, "%[^@]s", chave);
-        insere_no(indiceP, chave, chave, "", count);
-        count++;
-    }
     if (deletados > 0) {
+        ftruncate(fileno(fp), ftell(fp) - (deletados * 192)); //Truncate para remover do fim do arquivo os duplicados que ficam do laço anterior
+
+        //Expurga a árvores de índice primário e a reescreve partindo do arquivo de filmes
+        //É necessário para manter a integridade do RRN
+        expurgar_arvore(*indiceP, FALSE);
+        *indiceP = NULL;
+
+        total = calculaRRN(fp);
+        rewind(fp);
+
+        count = 0;
+        while (count < total) {
+            fseek(fp, count * 192, SEEK_SET);
+            fscanf(fp, "%[^@]s", chave);
+            insere_no(indiceP, chave, chave, "", count);
+            count++;
+        }
         printf(SUCESSO "Arquivo compactado!\n" LIMPA);
         return TRUE;
     } else {

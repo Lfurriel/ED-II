@@ -90,7 +90,6 @@ int main() {
         escreverIndiceP(fileIndiceP, indiceP);
         rewind(fileIndiceP);
         fputc('1', fileIndiceP);
-        fclose(fileIndiceP);
 
         //Sobreescreve o arquivo de índice secundário com as informações da árvore
         fileIndiceS = fopen(pathTitle, "w");
@@ -98,10 +97,12 @@ int main() {
         escreverIndiceS(fileIndiceS, indiceS);
         rewind(fileIndiceS);
         fputc('1', fileIndiceS);
-        fclose(fileIndiceS);
 
         printf(SUCESSO NEGRITO"Arquivos de indices reescritos!\n" LIMPA);
     }
+
+    fclose(fileIndiceP);
+    fclose(fileIndiceS);
 
     expurgar_arvore(indiceP, FALSE);
     expurgar_arvore(indiceS, TRUE);
